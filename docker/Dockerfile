@@ -17,7 +17,7 @@ RUN --mount=type=cache,target=/root/.cache/pip,rw \
 
 # https://developer.nvidia.com/cuda-gpus
 # for a rtx 2060: ARG TORCH_CUDA_ARCH_LIST="7.5"
-ARG TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST:-3.5;5.0;6.0;6.1;7.0;7.5;8.0;8.6+PTX}"
+ARG TORCH_CUDA_ARCH_LIST="7.5"
 RUN . /build/venv/bin/activate && \
     python3 setup_cuda.py bdist_wheel -d .
 
@@ -36,8 +36,8 @@ RUN mkdir /app
 
 WORKDIR /app
 
-ARG WEBUI_VERSION
-RUN test -n "${WEBUI_VERSION}" && git reset --hard ${WEBUI_VERSION} || echo "Using provided webui source"
+#ARG WEBUI_VERSION
+#RUN test -n "${WEBUI_VERSION}" && git reset --hard ${WEBUI_VERSION} || echo "Using provided webui source"
 
 # Create virtualenv
 RUN virtualenv /app/venv
@@ -71,7 +71,12 @@ RUN --mount=type=cache,target=/root/.cache/pip,rw \
     pip3 install -r requirements.txt; \
     done
 
-ENV CLI_ARGS=""
+ENV AUTH_USER=aidemo
+ENV AUTH_PASS=aidemo
+
+ARG CPP_ARGS="--n-gpu-layers 32"
+
+ENV CLI_ARGS="--model llama-2-7b-chat.Q5_K_S.gguf --wbits 4 --listen --auto-devices --api --api-blocking-port 5000 --api-streaming-port 5005 --settings settings-edgecloud.yaml ${CPP_ARGS}"
 
 EXPOSE ${CONTAINER_PORT:-7860} ${CONTAINER_API_PORT:-5000} ${CONTAINER_API_STREAM_PORT:-5005}
-CMD . /app/venv/bin/activate && python3 server.py ${CLI_ARGS}
+CMD . /app/venv/bin/activate && python3 server.py ${CLI_ARGS} --gradio-auth ${AUTH_USER}:${AUTH_PASS}

@@ -14,16 +14,16 @@ services:
       - "${HOST_API_STREAM_PORT:-5005}:${CONTAINER_API_STREAM_PORT:-5005}"
     stdin_open: true
     tty: true
-    volumes:
-      - ./characters:/app/characters
-      - ./extensions:/app/extensions
-      - ./loras:/app/loras
-      - ./models:/app/models
-      - ./presets:/app/presets
-      - ./prompts:/app/prompts
-      - ./softprompts:/app/softprompts
-      - ./training:/app/training
-      - ./cloudflared:/etc/cloudflared
+#    volumes:
+#      - ./characters:/app/characters
+#      - ./extensions:/app/extensions
+#      - ./loras:/app/loras
+#      - ./models:/app/models
+#      - ./presets:/app/presets
+#      - ./prompts:/app/prompts
+#      - ./softprompts:/app/softprompts
+#      - ./training:/app/training
+#      - ./cloudflared:/etc/cloudflared
     deploy:
       resources:
         reservations:
