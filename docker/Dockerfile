@@ -71,6 +71,8 @@ RUN --mount=type=cache,target=/root/.cache/pip,rw \
     pip3 install -r requirements.txt; \
     done
 
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,rw apt-get autoremove
+
 ENV AUTH_USER=aidemo
 ENV AUTH_PASS=aidemo
 
