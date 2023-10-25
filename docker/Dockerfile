@@ -74,9 +74,8 @@ RUN --mount=type=cache,target=/root/.cache/pip,rw \
 ENV AUTH_USER=aidemo
 ENV AUTH_PASS=aidemo
 
-ARG CPP_ARGS="--n-gpu-layers 32"
-
-ENV CLI_ARGS="--model llama-2-7b-chat.Q5_K_S.gguf --wbits 4 --listen --auto-devices --api --api-blocking-port 5000 --api-streaming-port 5005 --settings settings-edgecloud.yaml ${CPP_ARGS}"
+ENV CLI_ARGS="--model llama-2-7b-chat.Q5_K_S.gguf --wbits 4 --listen --auto-devices --api --api-blocking-port 5000 --api-streaming-port 5005 --settings settings-edgecloud.yaml"
+ENV EXTRA_CLI_ARGS="--n-gpu-layers 32"
 
 EXPOSE ${CONTAINER_PORT:-7860} ${CONTAINER_API_PORT:-5000} ${CONTAINER_API_STREAM_PORT:-5005}
-CMD . /app/venv/bin/activate && python3 server.py ${CLI_ARGS} --gradio-auth ${AUTH_USER}:${AUTH_PASS}
+CMD . /app/venv/bin/activate && python3 server.py ${CLI_ARGS} --gradio-auth ${AUTH_USER}:${AUTH_PASS} ${EXTRA_CLI_ARGS}
